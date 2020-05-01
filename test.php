@@ -17,7 +17,7 @@ require_once 'myApp/User.inc.php';
         'email' => 'myEmail',
         'password' => 'myPassword'
     ];
-    echo $myUser->store($request);
+    echo $myUser->create();
 // }
 // else 
 // {

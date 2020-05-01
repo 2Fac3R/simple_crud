@@ -2,9 +2,20 @@
 
 require_once 'config/Connection.php';
 require_once 'config/config.php';
+require_once 'Role.inc.php';
 
 class User extends Connection {
-
+    /* 
+        TABLE -> users
+        +----------+--------------+------+-----+---------+----------------+
+        | Field    | Type         | Null | Key | Default | Extra          |
+        +----------+--------------+------+-----+---------+----------------+
+        | user_id  | int(11)      | NO   | PRI | NULL    | auto_increment |
+        | username | varchar(255) | NO   |     | NULL    |                |
+        | email    | varchar(255) | NO   |     | NULL    |                |
+        | password | varchar(255) | NO   |     | NULL    |                |
+        +----------+--------------+------+-----+---------+----------------+
+    */
     function __construct() {
 
         // Connection to the database
@@ -14,18 +25,15 @@ class User extends Connection {
         // Creates dbh object (database handler)
         $this->dbh = new Connection(DB_HOST, DB_USER, DB_PASSWORD);
         $this->dbh = $this->dbh->Connect(DB_DATABASE_NAME, $this->db_myTable);
-        
-        // User Attributes
-        $this->username = "";
-        $this->email = "";
-        $this->password = "";
+
+        $this->role = new Role();
 
         // Forms
-        $this->myPath = '/forms/users/';
         $this->form_create = 'create.php';
         $this->form_edit = 'edit.php';
 
         // URL's
+        $this->myPath = '/forms/users/';
         $this->url_index = 'index.php';
         $this->url_show = 'show.php?id=';
 
@@ -55,29 +63,37 @@ class User extends Connection {
     
     /* Show the form for creating a new resource. */
     function create() {
-        header("Location: /simple_crud$this->myPath$this->form_create");
+        header("Location: /".APP_NAME."$this->myPath$this->form_create");
     }
 
     function store($request) {
-        $username = $request['username'];
-        $email = $request['email'];
-        $password = hash('sha1', $request['password']);
-
-        $query = 
-        "
-            INSERT INTO $this->db_myTable
-                (username, email, password)
-            VALUES 
-                (:username, :email, :password)
-        ";
         
         try {
+            $username = $request['username'];
+            $email = $request['email'];
+            $password = hash('sha1', $request['password']);
+
+            $query = 
+            "
+                INSERT INTO $this->db_myTable
+                    (username, email, password)
+                VALUES 
+                    (:username, :email, :password)
+            ";  
+
             $sth = $this->dbh->prepare($query);
             
             $sth->bindParam(':username', $username, PDO::PARAM_STR);
             $sth->bindParam(':email', $email, PDO::PARAM_STR);
             $sth->bindParam(':password', $password, PDO::PARAM_STR);
             $sth->execute();
+
+            $req = [
+                'role_id' => $request['role_id'], 
+                'user_id' => $this->dbh->lastInsertId()
+            ];
+
+            $this->role->store($req);
             
             return json_encode($sth);
 
@@ -113,7 +129,7 @@ class User extends Connection {
 
     /* Show the form for editing the specified resource. */
     function edit($id) {
-        header("Location: /simple_crud$this->myPath$this->form_edit");
+        header("Location: /".APP_NAME."$this->myPath$this->form_edit");
     }
 
     function update($request, $id) {
@@ -139,7 +155,7 @@ class User extends Connection {
             $sth->bindParam(':user_id', $id, PDO::PARAM_INT);
             $sth->execute();
             
-            header("Location: /simple_crud$this->myPath$this->url_show$id");
+            header("Location: /".APP_NAME."$this->myPath$this->url_show$id");
 
         } catch (Exception $e) {
 
@@ -159,12 +175,18 @@ class User extends Connection {
             $sth->bindParam(':user_id', $id, PDO::PARAM_INT);
             $sth->execute();
             
-            header("Location: /simple_crud$this->myPath$this->url_index");
+            header("Location: /".APP_NAME."$this->myPath$this->url_index");
 
         } catch (Exception $e) {
 
             return $e->getMessage();
         }
+    }
+
+    function hasRole($id) {
+        $this->role->setRole($this->role->show($id));
+
+        return json_encode($this->role);
     }
 
     // Method for testing...

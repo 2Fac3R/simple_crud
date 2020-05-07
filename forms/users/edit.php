@@ -28,7 +28,7 @@ if(!empty($_GET['id'])) {
 
     ";
 } else {
-    echo "No ID";
+    echo "No ID provided";
 }
 ?>
 

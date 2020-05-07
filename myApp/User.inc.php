@@ -4,7 +4,7 @@ require_once 'config/Connection.php';
 require_once 'config/config.php';
 require_once 'Role.inc.php';
 
-class User extends Connection {
+class User {
     /* 
         TABLE -> users
         +----------+--------------+------+-----+---------+----------------+
@@ -35,19 +35,18 @@ class User extends Connection {
         // URL's
         $this->myPath = '/forms/users/';
         $this->url_index = 'index.php';
-        $this->url_show = 'show.php?id=';
+        $this->url_show = 'show.php';
 
     }
     
     /* Display a listing of the resource */
-    function index() {
-        $query = 
-        "
-            SELECT *
-            FROM $this->db_myTable
-        ";
-        
+    function index() {      
         try {
+            $query = 
+            "
+                SELECT *
+                FROM $this->db_myTable
+            ";
             $sth = $this->dbh->prepare($query);
             $sth->execute();
             $data = $sth->fetchAll();
@@ -58,7 +57,6 @@ class User extends Connection {
 
             return $e->getMessage();
         }
-        
     }
     
     /* Show the form for creating a new resource. */
@@ -67,7 +65,6 @@ class User extends Connection {
     }
 
     function store($request) {
-        
         try {
             $username = $request['username'];
             $email = $request['email'];
@@ -105,15 +102,15 @@ class User extends Connection {
 
     /* Store a newly created resource in storage. */
     function show($id) {
-        $query = 
-        "
-            SELECT *
-            FROM $this->db_myTable
-            WHERE $this->db_myId = :user_id
-
-        ";
-        
         try {
+            $query = 
+            "
+                SELECT *
+                FROM $this->db_myTable
+                WHERE $this->db_myId = :user_id
+
+            ";
+            
             $sth = $this->dbh->prepare($query);
             $sth->bindParam(':user_id', $id, PDO::PARAM_INT);
             $sth->execute();
@@ -133,21 +130,21 @@ class User extends Connection {
     }
 
     function update($request, $id) {
-        $username = $request['username'];
-        $email = $request['email'];
-        $password = hash('sha1', $request['password']);
-
-        $query = 
-        "
-            UPDATE $this->db_myTable
-            SET 
-                username = :username, 
-                email = :email,
-                password = :password
-            WHERE $this->db_myId = :user_id
-        ";
-        
         try {
+            $username = $request['username'];
+            $email = $request['email'];
+            $password = hash('sha1', $request['password']);
+
+            $query = 
+            "
+                UPDATE $this->db_myTable
+                SET 
+                    username = :username, 
+                    email = :email,
+                    password = :password
+                WHERE $this->db_myId = :user_id
+            ";
+
             $sth = $this->dbh->prepare($query);
             $sth->bindParam(':username', $username, PDO::PARAM_STR);
             $sth->bindParam(':email', $email, PDO::PARAM_STR);
@@ -155,7 +152,7 @@ class User extends Connection {
             $sth->bindParam(':user_id', $id, PDO::PARAM_INT);
             $sth->execute();
             
-            header("Location: /".APP_NAME."$this->myPath$this->url_show$id");
+            header("Location: /".APP_NAME."$this->myPath$this->url_show?id=$id");
 
         } catch (Exception $e) {
 
@@ -164,13 +161,13 @@ class User extends Connection {
     }
 
     function destroy($id) {
-        $query = 
-        "
-            DELETE FROM $this->db_myTable 
-            WHERE user_id = :user_id
-        ";
-        
         try {
+            $query = 
+            "
+                DELETE FROM $this->db_myTable 
+                WHERE user_id = :user_id
+            ";
+            
             $sth = $this->dbh->prepare($query);
             $sth->bindParam(':user_id', $id, PDO::PARAM_INT);
             $sth->execute();

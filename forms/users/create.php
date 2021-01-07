@@ -1,14 +1,14 @@
 <?php
 
-if($_POST){
+if($_POST) {
     require_once '../../myApp/User.inc.php';
 
     $myUser = new User();
     $request = [
         'username' => $_POST['username'],
-        'email' => $_POST['email'],
+        'email'    => $_POST['email'],
         'password' => $_POST['password'],
-        'role_id' => $_POST['roles']
+        'role_id'  => $_POST['roles']
     ];
     echo $myUser->store($request);
 }
@@ -16,9 +16,9 @@ if($_POST){
 ?>
 
 <form action="" method="post">
-    Username:   <input type="text" name="username"> <br>
-    Email:      <input type="email" name="email"> <br>
-    Password:   <input type="password" name="password"> <br>
+    Username: <input type="text" name="username">     <br>
+    Email:    <input type="email" name="email">       <br>
+    Password: <input type="password" name="password"> <br>
     Role: 
     <select name="roles">
         <option value="1">Admin</option>

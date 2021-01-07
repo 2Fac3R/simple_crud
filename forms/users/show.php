@@ -18,8 +18,7 @@ printf(
         $user[0]->user_id, 
         $user[0]->username, 
         $user[0]->email, 
-        $user[0]->password//,
-        //$role[0]->role  // It doesn't work
+        $user[0]->password
     );
 
 var_dump($role);

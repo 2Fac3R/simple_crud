@@ -11,7 +11,6 @@ class Role {
         +-------------+--------------+------+-----+---------+----------------+
         | id          | int(11)      | NO   | PRI | NULL    | auto_increment |
         | role        | varchar(255) | NO   |     | NULL    |                |
-        | permissions | varchar(255) | YES  |     | NULL    |                |
         +-------------+--------------+------+-----+---------+----------------+
         
         TABLE -> user_role
@@ -27,17 +26,18 @@ class Role {
         // Connection to the database
         $this->db_myTable = 'roles';
         $this->db_myId = 'id';
+
+        // Relation 1-1: One User can only have one role
+        $this->db_user_role = 'user_role'; 
         $this->db_role_id = 'role_id';
         $this->db_user_id = 'user_id';
-        $this->db_user_role = 'user_role'; // Relation 1-1: One User can only have one role
 
         // Creates dbh object (database handler)
         $this->dbh = new Connection(DB_HOST, DB_USER, DB_PASSWORD);
         $this->dbh = $this->dbh->Connect(DB_DATABASE_NAME, $this->db_myTable);
 
-        // User Attributes
+        // Role Attributes
         $this->role = $role;
-        $this->permissions = ['Create', 'Read', 'Update', 'Delete'];
     }
 
     // Get :role_id from :user_id
@@ -77,7 +77,6 @@ class Role {
             ";
             
             $sth = $this->dbh->prepare($query);
-            
             $sth->bindParam(':role_id', $roleID, PDO::PARAM_INT);
             $sth->bindParam(':user_id', $userID, PDO::PARAM_INT);
             $sth->execute();

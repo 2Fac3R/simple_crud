@@ -64,6 +64,7 @@ class User {
         header("Location: /".APP_NAME."$this->myPath$this->form_create");
     }
 
+    /* Store a newly created resource in storage. */
     function store($request) {
         try {
             $username = $request['username'];
@@ -79,7 +80,6 @@ class User {
             ";  
 
             $sth = $this->dbh->prepare($query);
-            
             $sth->bindParam(':username', $username, PDO::PARAM_STR);
             $sth->bindParam(':email', $email, PDO::PARAM_STR);
             $sth->bindParam(':password', $password, PDO::PARAM_STR);
@@ -100,7 +100,7 @@ class User {
         }
     }
 
-    /* Store a newly created resource in storage. */
+    /* Show the specified resource. */
     function show($id) {
         try {
             $query = 
@@ -108,7 +108,6 @@ class User {
                 SELECT *
                 FROM $this->db_myTable
                 WHERE $this->db_myId = :user_id
-
             ";
             
             $sth = $this->dbh->prepare($query);
@@ -129,6 +128,7 @@ class User {
         header("Location: /".APP_NAME."$this->myPath$this->form_edit");
     }
 
+    /* Updates the specified resource */
     function update($request, $id) {
         try {
             $username = $request['username'];
@@ -160,6 +160,7 @@ class User {
         }
     }
 
+    /* Destroys the specified resource. */
     function destroy($id) {
         try {
             $query = 

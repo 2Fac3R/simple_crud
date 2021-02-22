@@ -30,7 +30,7 @@ class User {
 
         // Forms
         $this->form_create = 'create.php';
-        $this->form_edit = 'edit.php';
+        $this->form_edit = 'edit.php'; 
 
         // URL's
         $this->myPath = '/forms/users/';

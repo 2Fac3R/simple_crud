@@ -14,11 +14,11 @@ printf(
     <b> Username </b>: %s <br>
     <b> Email </b>: %s <br>
     <b> Password </b>: %s <br>
-    ",  
-        $user[0]->user_id, 
-        $user[0]->username, 
-        $user[0]->email, 
-        $user[0]->password
-    );
+    ",
+    $user[0]->user_id,
+    $user[0]->username,
+    $user[0]->email,
+    $user[0]->password
+);
 
 var_dump($role);
